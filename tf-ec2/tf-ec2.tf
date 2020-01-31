@@ -1,6 +1,4 @@
-variable "region" {
-  default = "eu-west-3"
-}
+
 provider "aws" {
   profile = "default"
   region  = var.region
@@ -12,13 +10,21 @@ provider "aws" {
 #}
 
 resource "aws_instance" "myFirstTerraform" {
-  ami           = "ami-007fae589fdf6e955"
-  instance_type = "t2.micro"
+  ami           = var.amis[var.region]
+  instance_type = var.ec2-size
   tags = {
     Name = "MyFirstTerraformInstance"
   }
-
+  #Our S3 bucket
   depends_on = [aws_s3_bucket.myFirstTerraform]
+  #Our user data
+  user_data = file("./userdata.sh")
+  # Our Security group to allow HTTP and SSH access
+  vpc_security_group_ids = [aws_security_group.myFirstTerraformSG.id]
+
+  #Subnet environment it's more common to have a separate private subnet for backend instances.
+  subnet_id = aws_subnet.myFirstTerraformSubnet.id
+
 }
 
 resource "aws_s3_bucket" "myFirstTerraform" {
