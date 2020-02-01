@@ -1,0 +1,9 @@
+.DS_Store
+*.tfstate
+.terraform/
+*.backup
+.idea
+tf-ec2-sample
+
+../tf-ec2-sample/main.tf
+
